@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Covid19DataLogger2022": {
+      "commandName": "Project",
+      "commandLineArgs": "-settingsfile \"D:\\Data\\coronavirus\\Covid19DataLogger2022\\Settings.json\""
+    }
+  }
+}
