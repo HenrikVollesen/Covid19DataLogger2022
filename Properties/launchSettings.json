@@ -2,7 +2,11 @@
   "profiles": {
     "Covid19DataLogger2022": {
       "commandName": "Project",
-      "commandLineArgs": "-settingsfile \"D:\\Data\\coronavirus\\Covid19DataLogger2022\\Settings.json\""
+      "commandLineArgs": "-settingsfile \"D:\\Data\\coronavirus\\Covid19DataLogger2022\\SettingsServer2019.json\""
+    },
+    "Covid19DataLogger2022_2": {
+      "commandName": "Project",
+      "commandLineArgs": "-settingsfile \"D:\\Data\\coronavirus\\Covid19DataLogger2022\\SettingsServer2019_2.json\""
     }
   }
 }

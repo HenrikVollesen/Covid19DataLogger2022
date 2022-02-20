@@ -14,8 +14,9 @@ namespace Covid19DataLogger2022
 
         static void Main(string[] args)
         {
-            // Pass cmd line string directly to ctor of Covid19_DataLogger - for now.
-            // In next iteration, parse it with a new ParseCommandline() that extracts JSON to a new ctor
+            // 1) Command line should be like: -settingsfile C:\\YourDataDirectory\\YourSettingsFile.json
+            // 2) If the settings file exists, construct new Covid19_DataLogger object
+            // 3) Start logging (scraping) data with the Log(string Settings) method
             string SettingsPath;
 
             if (args.Length > 0)
