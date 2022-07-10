@@ -3,6 +3,9 @@
     "Covid19DataLogger2022": {
       "commandName": "Project",
       "commandLineArgs": "-settingsfile \"D:\\Data\\coronavirus\\Covid19DataLogger2022\\SettingsServer2019.json\""
+    },
+    "NoCmdLineArgs": {
+      "commandName": "Project"
     }
   }
 }

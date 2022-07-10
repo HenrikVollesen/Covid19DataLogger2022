@@ -11,12 +11,15 @@ namespace Covid19DataLogger2022
 {
     class MainClass
     {
-
         static void Main(string[] args)
         {
-            // Pass cmd line string directly to ctor of Covid19_DataLogger - for now.
-            // In next iteration, parse it with a new ParseCommandline() that extracts JSON to a new ctor
-            string SettingsPath;
+            // 1) Command line should be like: -settingsfile C:\\YourDataDirectory\\YourSettingsFile.json
+            // 2) If no command line args, try to use the settings file in the project, Settings.json
+            //    (which will probably fail until you change the line: "DataSource": "SomeLocalSQLServer\\SomeSQLInstance"
+            //     to an existing MSSQL instance)
+            // 3) If the settings file exists, construct new Covid19_DataLogger object from these settings
+            // 4) Start logging (scraping) data with the Log(string Settings) method
+            string SettingsPath = "";
 
             if (args.Length > 0)
             {
@@ -26,17 +29,20 @@ namespace Covid19DataLogger2022
                     if (args.Length > 1)
                     {
                         SettingsPath = args[1];
-                        if (File.Exists(SettingsPath))
-                        {
-                            Covid19_DataLogger theLogger = new();
-                            theLogger.Log(File.ReadAllText(SettingsPath));
-                        }
                     }
                 }
             }
+            else
+            {
+                SettingsPath = @"Settings.json";
+            }
+
+            if (File.Exists(SettingsPath))
+            {
+                Covid19_DataLogger theLogger = new();
+                theLogger.Log(File.ReadAllText(SettingsPath));
+            }
         }
-
-
     }
 }
 

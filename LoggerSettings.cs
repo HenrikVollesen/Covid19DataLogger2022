@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Covid19DataLogger2022
 {
     internal class LoggerSettings
     {
-        public string DataFolder { get; set; }
+        public string LogDataFolder { get; set; }
         public bool SaveFiles { get; set; }
         public string ConnString { get; set; }
         public SqlConnection conn { get; set; }

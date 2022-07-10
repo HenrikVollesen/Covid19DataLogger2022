@@ -5,10 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Covid19DataLogger2022
 {
@@ -18,10 +15,10 @@ namespace Covid19DataLogger2022
         // https://engineering.jhu.edu/case/faculty/lauren-gardner/
 
         // Fields for navigating in time, in day (24H) steps
-        private readonly DateTime DayZero = new(2020, 1, 22);
-        private readonly DateTime now = DateTime.Now; // We just need the date of today, not the time in milliseconds, for this app.
-        private readonly TimeSpan NextDay = new(1, 0, 0, 0); // Step precisely 1 day forward
-        private readonly TimeSpan PreviousDay = new(-1, 0, 0, 0); // Step precisely 1 day back
+        private readonly DateTime DayZero = new(2020, 1, 22);       // The day when Covid19 data were first logged
+        private readonly DateTime now = DateTime.Now;               // We just need the date of today, not the time in milliseconds, for this app.
+        private readonly TimeSpan NextDay = new(1, 0, 0, 0);        // Step precisely 1 day forward
+        private readonly TimeSpan PreviousDay = new(-1, 0, 0, 0);   // Step precisely 1 day back
 
         // resource URL for REST API
         private const string ClientString1 = "https://disease.sh/v3/covid-19/historical/";
@@ -37,6 +34,9 @@ namespace Covid19DataLogger2022
 
         // SQL command for getting predefined countries (there should be 185 countries)
         private string GetCountriesCommand = "SELECT Alpha_2_code FROM GetAPICountries()";
+
+        // SQL command for getting last date where logging took place (typically the day before yesterday)
+        private string LastLogDateString = "SELECT TOP 1 date FROM DimDate ORDER BY date DESC";
 
         private RestRequest request = null;
         private IRestResponse response_Stats = null;
@@ -54,12 +54,13 @@ namespace Covid19DataLogger2022
 
             foreach (SqlConnectionStringBuilder s in ConnectionStrings)
             {
-                if (i > 1)
-                    break;
+                //if (i > 0) // Work in progress...
+                //    break;
+
                 LoggerSettings loggerSettings = new LoggerSettings()
                 {
                     SaveFiles = StoreDatafiles,
-                    DataFolder = DataFolder,
+                    LogDataFolder = DataFolder,
                     ConnString = s.ConnectionString
                 };
 
@@ -92,6 +93,7 @@ namespace Covid19DataLogger2022
             // Finally, retrieve data per country, starting from the first missing date in that country's collection
             LogData(loggerSettings);
         }
+
         private void GetCountryCodes(LoggerSettings ls)
         {
             ls.conn.Open();
@@ -117,7 +119,6 @@ namespace Covid19DataLogger2022
             bool result = false;
             ls.conn.Open();
 
-            string LastLogDateString = "SELECT TOP 1 date FROM DimDate ORDER BY date DESC";
             DateTime FirstMissingDate;
 
             SqlCommand getLastLogDate = new(LastLogDateString, ls.conn);
@@ -170,6 +171,7 @@ namespace Covid19DataLogger2022
             ls.conn.Close();
             return result;
         }
+
         private void LogData(LoggerSettings ls)
         {
             // variables for reading JSON objects from request
@@ -236,7 +238,7 @@ namespace Covid19DataLogger2022
                         }
 
                         // Here begins parsing of data from the response
-                        Console.WriteLine("Saving data for: " + isoCode + DB );
+                        Console.WriteLine("Saving data for: " + isoCode + DB);
                         jd = new JsonDeserializer();
                         root = jd.Deserialize<dynamic>(response_Stats);
                         timeline = root["timeline"];
@@ -401,8 +403,6 @@ namespace Covid19DataLogger2022
             {
                 Console.WriteLine(e.Message);
             }
-
         }
-
     }
 }
